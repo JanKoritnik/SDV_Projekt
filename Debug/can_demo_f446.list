@@ -2180,8 +2180,8 @@ int main(void)
  8001508:	4837      	ldr	r0, [pc, #220]	@ (80015e8 <main+0x250>)
  800150a:	f7ff fee9 	bl	80012e0 <CG_SetSpeed>
             }
-            HAL_Delay(20);
- 800150e:	2014      	movs	r0, #20
+            HAL_Delay(4);
+ 800150e:	2004      	movs	r0, #4
  8001510:	f000 ffe2 	bl	80024d8 <HAL_Delay>
         for (int i = 0; i < 4; i++)
  8001514:	68fb      	ldr	r3, [r7, #12]

@@ -227,7 +227,9 @@ int main(void)
             {
                 CG_SetSpeed(&hcan1, motor_ID[i], speed);
             }
-            HAL_Delay(20);
+            HAL_Delay(4);
+
+            //test github
         }
 
         // DDSM115 - nastavi hitrost (direction: +100 ali -100 RPM)
