@@ -1,0 +1,12 @@
+../Core/Src/cybergear.c:10:13:_CG_SendFrame	1
+../Core/Src/cybergear.c:27:13:_CG_WriteFloat	3
+../Core/Src/cybergear.c:46:13:_CG_WriteUint8	1
+../Core/Src/cybergear.c:60:6:CG_Enable	1
+../Core/Src/cybergear.c:65:6:CG_Stop	1
+../Core/Src/cybergear.c:70:6:CG_StopAll	2
+../Core/Src/cybergear.c:77:6:CG_SetRunMode	1
+../Core/Src/cybergear.c:81:6:CG_SetLimitCurrent	1
+../Core/Src/cybergear.c:86:6:CG_SetLimitSpeed	1
+../Core/Src/cybergear.c:91:6:CG_SetSpeed	1
+../Core/Src/cybergear.c:95:6:CG_SetPosition	1
+../Core/Src/cybergear.c:100:6:CG_InitAllMotors	2
