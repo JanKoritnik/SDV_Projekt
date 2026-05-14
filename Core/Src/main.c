@@ -205,74 +205,34 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-#define TARGET_SPEED  10.0f   // rad/s
-#define RUN_TIME_MS   2000    // čas vrtenja v eni smeri (ms)
+#define TARGET_ANGLE_RAD  0.5472f  // 60 stopinj v radianih
 
-    int8_t direction = 1;
-    int cycle_count = 0;
+    // Motor 1 (ID 6) in 4 (ID 8) → +60°
+    CG_SetPosition(&hcan1, motor_ID[0],  TARGET_ANGLE_RAD);
+    HAL_Delay(4);
+    CG_SetPosition(&hcan1, motor_ID[3],  TARGET_ANGLE_RAD);
+    HAL_Delay(4);
 
-    while (cycle_count < 10)
+    // Motor 2 (ID 5) in 3 (ID 7) → -60°
+    CG_SetPosition(&hcan1, motor_ID[1], -TARGET_ANGLE_RAD);
+    HAL_Delay(4);
+    CG_SetPosition(&hcan1, motor_ID[2], -TARGET_ANGLE_RAD);
+    HAL_Delay(4);
+
+    HAL_Delay(10000);
+
+    // Vrni vse motorje na nulto pozicijo
+    for (int i = 0; i < 4; i++)
     {
-        float speed = direction * TARGET_SPEED;
-
-        // Nastavi hitrost vsem motorjem
-        // Motorja i==2 in i==3 sta fizično obrnjena — dobita negativno smer
-        for (int i = 0; i < 4; i++)
-        {
-            if (i == 2 || i == 3)
-            {
-                CG_SetSpeed(&hcan1, motor_ID[i], -speed);
-            }
-            else
-            {
-                CG_SetSpeed(&hcan1, motor_ID[i], speed);
-            }
-            HAL_Delay(4);
-
-            //test github
-        }
-
-        // DDSM115 - nastavi hitrost (direction: +100 ali -100 RPM)
-        sendVelocityCommand(0x01, direction * 100.0f);
+        CG_SetPosition(&hcan1, motor_ID[i], 0.0f);
         HAL_Delay(4);
-        sendVelocityCommand(0x30, direction * 100.0f);
-        HAL_Delay(4);
-
-        HAL_Delay(RUN_TIME_MS);
-
-        // Ustavi DDSM115 pred menjavo smeri
-        sendVelocityCommand(0x01, 0.0f);
-        HAL_Delay(4);
-        sendVelocityCommand(0x30, 0.0f);
-        HAL_Delay(4);
-
-        // Obrni smer za naslednji krog
-        direction = -direction;
-        cycle_count++;
+    }
+    HAL_Delay(3000);
 
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-        // MPU6050 branje (zakomentirano)
-        //MPU6050_Read_All(&hi2c3, &MPU6050);
-        //Acc_ptich_roll_Kalman(&MPU6050);
-        //sprintf(buffer, "Roll: %.2f  Pitch: %.2f \n\r", roll_kalman, pitch_kalman);
-
-        HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 1000);
-    }
-
-
-   /* for (int i = 0; i < 4; i++)
-            {
-
-                    CG_SetPosition(&hcan1, motor_ID[i], 0);
-                    HAL_Delay(20);
-                }*/
-
-
-
-    CG_StopAll(&hcan1,motor_ID);
+    CG_StopAll(&hcan1, motor_ID);
   /* USER CODE END 3 */
 }
 

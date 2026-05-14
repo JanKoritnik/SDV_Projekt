@@ -97,22 +97,40 @@ void CG_SetPosition(CAN_HandleTypeDef *hcan, uint8_t motor_id, float position) {
 			CG_POS_MAX);
 }
 
+void CG_SetCurrent(CAN_HandleTypeDef *hcan, uint8_t motor_id, float current_a) {
+	_CG_WriteFloat(hcan, motor_id, CG_ADDR_I_REF, current_a, CG_I_MIN, CG_I_MAX);
+}
+
+void CG_SetMechZero(CAN_HandleTypeDef *hcan, uint8_t motor_id) {
+	uint8_t data[8] = { 0 };
+	data[0] = 1;  // protokol zahteva Byte[0]=1
+	_CG_SendFrame(hcan, CG_CMD_SET_MECH_POSITION_TO_ZERO, motor_id, data);
+}
+
 void CG_InitAllMotors(CAN_HandleTypeDef *hcan, uint8_t ids[CG_NUM_MOTORS]) {
 	for (int i = 0; i < CG_NUM_MOTORS; i++) {
-		// 1. Ustavi motor (čisto stanje pred konfiguracijo)
+		// 1. Ustavi motor (motor mora biti ustavljen pred nastavo nule)
 		CG_Stop(hcan, ids[i]);
 		HAL_Delay(CG_INIT_DELAY_MS);
 
-		// 2. Nastavi speed mode
-		CG_SetRunMode(hcan, ids[i], CG_MODE_SPEED);
+		// 2. Nastavi trenutno pozicijo kot mehansko nulo
+		CG_SetMechZero(hcan, ids[i]);
 		HAL_Delay(CG_INIT_DELAY_MS);
 
-		// 3. Nastavi limit toka
-		CG_SetLimitCurrent(hcan, ids[i], CG_DEFAULT_LIMIT_CURRENT);
+		// 3. Nastavi position mode
+		CG_SetRunMode(hcan, ids[i], CG_MODE_POSITION);
 		HAL_Delay(CG_INIT_DELAY_MS);
 
 		// 4. Omogoči motor
 		CG_Enable(hcan, ids[i]);
+		HAL_Delay(CG_INIT_DELAY_MS);
+
+		// 5. Nastavi limit hitrosti za position following
+		CG_SetLimitSpeed(hcan, ids[i], CG_DEFAULT_LIMIT_SPEED);
+		HAL_Delay(CG_INIT_DELAY_MS);
+
+		// 6. Nastavi limit toka
+		CG_SetLimitCurrent(hcan, ids[i], CG_DEFAULT_LIMIT_CURRENT);
 		HAL_Delay(CG_INIT_DELAY_MS);
 	}
 }

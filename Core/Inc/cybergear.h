@@ -48,7 +48,8 @@
 
 /* ── Konfiguracijske konstante ───────────────────────────── */
 #define CG_NUM_MOTORS                 4
-#define CG_DEFAULT_LIMIT_CURRENT      5.0f   // A
+#define CG_DEFAULT_LIMIT_CURRENT      3.0f   // A
+#define CG_DEFAULT_LIMIT_SPEED        2.0f  // rad/s za position following
 #define CG_INIT_DELAY_MS              50     // delay med ukazi pri init
 
 /* ── Return kode ─────────────────────────────────────────── */
@@ -60,13 +61,23 @@
  * ═══════════════════════════════════════════════════════════ */
 
 /**
- * @brief  Inicializira vse 4 motorje v speed mode.
- *         Zaporedje za vsak motor: stop → set_run_mode(SPEED) →
+ * @brief  Inicializira vse 4 motorje v current mode.
+ *         Zaporedje za vsak motor: stop → set_run_mode(CURRENT) →
  *         set_limit_current → enable.
  * @param  hcan   Pointer na CAN handle (npr. &hcan1)
  * @param  ids    Array s 4 motor ID-ji (npr. {6,5,7,8})
  */
 void CG_InitAllMotors(CAN_HandleTypeDef *hcan, uint8_t ids[CG_NUM_MOTORS]);
+
+/**
+ * @brief  Nastavi tok motorja v A (-27 .. +27).
+ */
+void CG_SetCurrent(CAN_HandleTypeDef *hcan, uint8_t motor_id, float current_a);
+
+/**
+ * @brief  Nastavi trenutno pozicijo motorja kot mehansko nulo (0x06).
+ */
+void CG_SetMechZero(CAN_HandleTypeDef *hcan, uint8_t motor_id);
 
 /**
  * @brief  Nastavi hitrost motorja v rad/s (-30 .. +30).

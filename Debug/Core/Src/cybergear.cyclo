@@ -9,4 +9,6 @@
 ../Core/Src/cybergear.c:86:6:CG_SetLimitSpeed	1
 ../Core/Src/cybergear.c:91:6:CG_SetSpeed	1
 ../Core/Src/cybergear.c:95:6:CG_SetPosition	1
-../Core/Src/cybergear.c:100:6:CG_InitAllMotors	2
+../Core/Src/cybergear.c:100:6:CG_SetCurrent	1
+../Core/Src/cybergear.c:104:6:CG_SetMechZero	1
+../Core/Src/cybergear.c:110:6:CG_InitAllMotors	2
