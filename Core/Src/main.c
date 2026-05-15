@@ -222,19 +222,42 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-    // DDSM115 - nastavi hitrost
-    sendVelocityCommand(0x10,  100.0f);
+#define TARGET_ANGLE_RAD  1.0472f  // 60 stopinj v radianih
+
+    // CG motorji - motor 1 (ID6) in 4 (ID8) → +60°, motor 2 (ID5) in 3 (ID7) → -60°
+    CG_SetPosition(&hcan1, motor_ID[0],  TARGET_ANGLE_RAD);
+    HAL_Delay(4);
+    CG_SetPosition(&hcan1, motor_ID[1], -TARGET_ANGLE_RAD);
+    HAL_Delay(4);
+    CG_SetPosition(&hcan1, motor_ID[2], -TARGET_ANGLE_RAD);
+    HAL_Delay(4);
+    CG_SetPosition(&hcan1, motor_ID[3],  TARGET_ANGLE_RAD);
+    HAL_Delay(4);
+
+    // Počakaj 3s
+    HAL_Delay(3000);
+
+    // DDSM115 - motor 0x10 naprej, motor 0x30 nazaj, 5s
+    sendVelocityCommand(0x10,  10.0f);
     HAL_Delay(4);
     sendVelocityCommand(0x30, -10.0f);
-    HAL_Delay(2000);
+    HAL_Delay(5000);
 
-    // Ustavi
+    // Ustavi DDSM115
     sendVelocityCommand(0x10, 0.0f);
     HAL_Delay(4);
     sendVelocityCommand(0x30, 0.0f);
+    HAL_Delay(1000);
 
     /* USER CODE END WHILE */
-
+    CG_SetPosition(&hcan1, motor_ID[0],  0.0);
+        HAL_Delay(4);
+        CG_SetPosition(&hcan1, motor_ID[1], 0.0);
+        HAL_Delay(4);
+        CG_SetPosition(&hcan1, motor_ID[2], 0.0);
+        HAL_Delay(4);
+        CG_SetPosition(&hcan1, motor_ID[3],  0.0);
+        HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
     CG_StopAll(&hcan1, motor_ID);
   /* USER CODE END 3 */

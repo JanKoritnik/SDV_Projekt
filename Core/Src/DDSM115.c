@@ -202,7 +202,7 @@ void  PositionMode(uint8_t motorID)
 	static int16_t VelocityToValue(float velocity) {
 		if(velocity < -300.0f) velocity = -300.0f;
 		if(velocity >  300.0f) velocity =  300.0f;
-		return (int16_t)((velocity / 300.0f) * 32767.0f);
+		return (int16_t)(velocity );
 	}
 
 	void sendVelocityCommand(uint8_t motorID, float velocity) {
