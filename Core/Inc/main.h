@@ -89,11 +89,11 @@ void Error_Handler(void);
 #define MRF_CS_Pin GPIO_PIN_5
 #define MRF_CS_GPIO_Port GPIOB
 
-/*
-#define RST_Pin GPIO_PIN_15
-#define RST_GPIO_Port GPIOB
-#define INT_GPIO_Port GPIOA
-#define INT_EXTI_IRQn EXTI1_IRQn*/
+/* BNO086 pin aliases used by demo_app.c */
+#define RST_Pin        BNO_RST_Pin
+#define RST_GPIO_Port  BNO_RST_GPIO_Port
+#define INT_GPIO_Port  BNO_INT_GPIO_Port
+#define INT_EXTI_IRQn  EXTI1_IRQn
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

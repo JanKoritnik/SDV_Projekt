@@ -22,10 +22,12 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "string.h"
-#include "mpu6050.h"
+#include <stdio.h>
+//#include "mpu6050.h"   // star senzor - zamenjan z BNO086
 #include "DDSM115.h"
 #include "MRF24J40.h"
 #include "cybergear.h"
+#include "demo_app.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -95,11 +97,14 @@ extern uint8_t AllocBuffer[RS485_BUFFER_SIZE];
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-MPU6050_t MPU6050;
 char buffer[100];
-extern double roll_kalman, pitch_kalman;
-extern float VPCnum;
 uint8_t read_intstat, read_intcon, read_RXMCR, read_BBREG1, read_RXFLUSH, frame_length;
+
+int __io_putchar(int ch)
+{
+    HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
+    return ch;
+}
 /* USER CODE END 0 */
 
 /**
@@ -141,7 +146,6 @@ int main(void)
     __HAL_UART_ENABLE_IT(&huart2, UART_IT_TC);
     __HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
     HAL_UART_Receive_IT(&huart2, &RxSingleByte, 1);
-    HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 1000);
 
     // UART5 - RS485
     HAL_UART_Receive_DMA(&huart5, RS485_RxBuffer, 10);
@@ -158,108 +162,53 @@ int main(void)
     sFilterConfig.FilterActivation = ENABLE;
     sFilterConfig.SlaveStartFilterBank = 14;
     HAL_CAN_ConfigFilter(&hcan1, &sFilterConfig);
-
-    // Zagon CAN vmesnika
     HAL_CAN_Start(&hcan1);
     HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
 
-    // I2C - IMU
-    //MPU6050_Init(&hi2c3);
+    // BNO086 inicializacija
+    BNO_Init(&hi2c3, &huart2, BNO_INT_Pin);
 
-    /*
-    // MRF24J40 - brezžični modul
-    Mrf24j_reset();
-    Mrf24j_init();
-    Mrf24j_set_channel(20);
-    Mrf24j_rx_flush();
-    uint8_t rxflush = 15;
-    rxflush = Mrf24j_read_short(MRF_RXFLUSH);
-    char one[] = "Hello world";
-    int da_size = sizeof(one) / sizeof(char);
-    Mrf24j_send16(0xAAff, one, da_size);
-    while(1){
-        read_intstat = Mrf24j_read_short(MRF_INTSTAT);
-        if(read_intstat & 0b00001000) // interrupt occured
-        {
-            frame_length = Mrf24j_read_long(0x300);
-        }
-    }
-    */
-
-    // Motorji - inicializacija vseh 4 v speed mode
+    // CyberGear motorji - inicializacija
     uint8_t motor_ID[] = {6, 5, 7, 8};
     CG_InitAllMotors(&hcan1, motor_ID);
 
-    // ── Sprememba motor ID ──────────────────────────────────────
-    // Poveži SAMO EN motor, nastavi NEW_MOTOR_ID in flešaj.
-    // Ko je ID spremenjen, zakomentiraj to sekcijo in poveži oba motorja.
-#define CHANGE_MOTOR_ID  0        // 1 = aktiviraj spremembo, 0 = preskoči
-#define NEW_MOTOR_ID     0x10     // ← sem vpišeš nov ID (npr. 0x01 ali 0x30)
-
-#if CHANGE_MOTOR_ID
-    ChangeMotorID(NEW_MOTOR_ID);
-    char cmsg[50];
-    sprintf(cmsg, "Motor ID spremenjen na: 0x%02X\r\n", NEW_MOTOR_ID);
-    HAL_UART_Transmit(&huart2, (uint8_t*)cmsg, strlen(cmsg), 1000);
-    while(1);  // ustavi — odklopi motor in zakomentiraj sekcijo
-#endif
-
-    // DDSM115 - inicializacija v velocity mode, preberi in izpiši motor ID
-    VelocityMode(0x10);
-    HAL_Delay(100);
-    uint8_t dds_id01 = AllocBuffer[0];
-
-    VelocityMode(0x30);
-    HAL_Delay(100);
-    uint8_t dds_id30 = AllocBuffer[0];
-
-    char msg[50];
-    sprintf(msg, "DDS ID1: 0x%02X  ID2: 0x%02X\r\n", dds_id01, dds_id30);
-    HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 1000);
+    // DDSM115 - velocity mode
+    VelocityMode(0x10); HAL_Delay(100);
+    VelocityMode(0x30); HAL_Delay(100);
 
   /* USER CODE END 2 */
+
+#define TARGET_ANGLE_RAD  1.0472f  // 60 stopinj
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-#define TARGET_ANGLE_RAD  1.0472f  // 60 stopinj v radianih
+    // CG motorji na pozicijo
+    CG_SetPosition(&hcan1, motor_ID[0],  TARGET_ANGLE_RAD); HAL_Delay(4);
+    CG_SetPosition(&hcan1, motor_ID[1], -TARGET_ANGLE_RAD); HAL_Delay(4);
+    CG_SetPosition(&hcan1, motor_ID[2], -TARGET_ANGLE_RAD); HAL_Delay(4);
+    CG_SetPosition(&hcan1, motor_ID[3],  TARGET_ANGLE_RAD); HAL_Delay(4);
 
-    // CG motorji - motor 1 (ID6) in 4 (ID8) → +60°, motor 2 (ID5) in 3 (ID7) → -60°
-    CG_SetPosition(&hcan1, motor_ID[0],  TARGET_ANGLE_RAD);
-    HAL_Delay(4);
-    CG_SetPosition(&hcan1, motor_ID[1], -TARGET_ANGLE_RAD);
-    HAL_Delay(4);
-    CG_SetPosition(&hcan1, motor_ID[2], -TARGET_ANGLE_RAD);
-    HAL_Delay(4);
-    CG_SetPosition(&hcan1, motor_ID[3],  TARGET_ANGLE_RAD);
-    HAL_Delay(4);
+    // 3s pavza - BNO086 teče med čakanjem
+    { uint32_t t = HAL_GetTick(); while (HAL_GetTick() - t < 3000) BNO_App(); }
 
-    // Počakaj 3s
-    HAL_Delay(3000);
+    // DDSM motorji 5s
+    sendVelocityCommand(0x10,  50.0f); HAL_Delay(4);
+    sendVelocityCommand(0x30, -50.0f);
+    { uint32_t t = HAL_GetTick(); while (HAL_GetTick() - t < 5000) BNO_App(); }
 
-    // DDSM115 - motor 0x10 naprej, motor 0x30 nazaj, 5s
-    sendVelocityCommand(0x10,  10.0f);
-    HAL_Delay(4);
-    sendVelocityCommand(0x30, -10.0f);
-    HAL_Delay(5000);
-
-    // Ustavi DDSM115
-    sendVelocityCommand(0x10, 0.0f);
-    HAL_Delay(4);
+    // Ustavi vse
+    sendVelocityCommand(0x10, 0.0f); HAL_Delay(4);
     sendVelocityCommand(0x30, 0.0f);
-    HAL_Delay(1000);
-
-    /* USER CODE END WHILE */
-    CG_SetPosition(&hcan1, motor_ID[0],  0.0);
-        HAL_Delay(4);
-        CG_SetPosition(&hcan1, motor_ID[1], 0.0);
-        HAL_Delay(4);
-        CG_SetPosition(&hcan1, motor_ID[2], 0.0);
-        HAL_Delay(4);
-        CG_SetPosition(&hcan1, motor_ID[3],  0.0);
-        HAL_Delay(1000);
-    /* USER CODE BEGIN 3 */
     CG_StopAll(&hcan1, motor_ID);
+
+  while (1)
+  {
+      BNO_App();
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+  }
   /* USER CODE END 3 */
 }
 
@@ -588,11 +537,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Alternate = GPIO_AF8_UART4;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : BNO_INT_Pin PA12 */
-  GPIO_InitStruct.Pin = BNO_INT_Pin|GPIO_PIN_12;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  /*Configure GPIO pin : BNO_INT_Pin (BNO086 interrupt, falling edge) */
+  GPIO_InitStruct.Pin = BNO_INT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(INT_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : RS485_DIR_Pin */
   GPIO_InitStruct.Pin = RS485_DIR_Pin;
@@ -615,6 +564,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(MRF_INT_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 1);
+  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 

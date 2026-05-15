@@ -1,0 +1,12 @@
+../Core/Src/demo_app.c:38:6:DWT_Init	4	static
+../Core/Src/demo_app.c:45:10:DWT_GetMicros	4	static
+../Core/Src/demo_app.c:53:12:hal_open	16	static
+../Core/Src/demo_app.c:54:13:hal_close	16	static
+../Core/Src/demo_app.c:56:12:hal_read	40	static
+../Core/Src/demo_app.c:86:12:hal_write	32	static
+../Core/Src/demo_app.c:94:17:hal_getTimeUs	16	static
+../Core/Src/demo_app.c:103:13:sensorCallback	120	static
+../Core/Src/demo_app.c:145:13:eventCallback	40	static
+../Core/Src/demo_app.c:160:6:BNO_Init	64	static
+../Core/Src/demo_app.c:204:6:BNO_App	104	static
+../Core/Src/demo_app.c:231:6:HAL_GPIO_EXTI_Callback	16	static
