@@ -22,11 +22,7 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "stdio.h"
-#include "stdlib.h"
-#include "DDSM115.h"
-#include "string.h"
-#include "mrf24j40.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -60,16 +56,12 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern CAN_HandleTypeDef hcan1;
-extern DMA_HandleTypeDef hdma_uart5_rx;
-extern UART_HandleTypeDef huart2;
-/* USER CODE BEGIN EV */
-extern CAN_HandleTypeDef hcan1;
-extern I2C_HandleTypeDef hi2c3;
+extern CAN_HandleTypeDef  hcan1;
+extern DMA_HandleTypeDef  hdma_uart5_rx;
 extern UART_HandleTypeDef huart2;
 extern UART_HandleTypeDef huart5;
-char VCPBuffer[10];
-float VPCnum=0.0f;
+/* USER CODE BEGIN EV */
+
 /* USER CODE END EV */
 
 /******************************************************************************/

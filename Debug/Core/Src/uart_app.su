@@ -1,0 +1,5 @@
+../Core/Src/uart_app.c:21:6:UART_App_Init	8	static
+../Core/Src/uart_app.c:29:6:serialWrite	16	static
+../Core/Src/uart_app.c:35:13:serialProcessRxData	8	static
+../Core/Src/uart_app.c:56:6:HAL_CAN_RxFifo0MsgPendingCallback	16	static
+../Core/Src/uart_app.c:61:6:HAL_UART_RxCpltCallback	16	static

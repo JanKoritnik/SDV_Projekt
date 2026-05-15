@@ -29,10 +29,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
- ../Core/Inc/DDSM115.h ../Core/Inc/MRF24J40.h ../Core/Inc/main.h \
- ../Core/Inc/cybergear.h ../Core/Inc/demo_app.h ../Core/Inc/sh2.h \
- ../Core/Inc/sh2_hal.h ../Core/Inc/sh2_SensorValue.h \
- ../Core/Inc/sh2_err.h
+ ../Core/Inc/DDSM115.h ../Core/Inc/cybergear.h ../Core/Inc/main.h \
+ ../Core/Inc/demo_app.h ../Core/Inc/sh2.h ../Core/Inc/sh2_hal.h \
+ ../Core/Inc/sh2_SensorValue.h ../Core/Inc/sh2_err.h \
+ ../Core/Inc/uart_app.h ../Core/Inc/DDSM115.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -65,11 +65,12 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
 ../Core/Inc/DDSM115.h:
-../Core/Inc/MRF24J40.h:
-../Core/Inc/main.h:
 ../Core/Inc/cybergear.h:
+../Core/Inc/main.h:
 ../Core/Inc/demo_app.h:
 ../Core/Inc/sh2.h:
 ../Core/Inc/sh2_hal.h:
 ../Core/Inc/sh2_SensorValue.h:
 ../Core/Inc/sh2_err.h:
+../Core/Inc/uart_app.h:
+../Core/Inc/DDSM115.h:

@@ -16,6 +16,7 @@
 
 #include "stdio.h"
 #include "stdlib.h"
+#include "string.h"
 #include "main.h"
 #include "DDSM115.h"
 

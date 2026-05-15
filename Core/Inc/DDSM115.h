@@ -22,19 +22,16 @@ void ChangeMotorID(uint8_t NewMotorID);
 
 
 /*Current control functions */
-	void  CurrentMode(uint8_t motorID);
-	static int16_t CurrentToValue(float current);
+	void CurrentMode(uint8_t motorID);
 	void sendCurrentCommand(uint8_t motorID, float current);
 
 /*Velocity control functions*/
-	void  VelocityMode(uint8_t motorID);
-	static int16_t VelocityToValue(float velocity);
+	void VelocityMode(uint8_t motorID);
 	void sendVelocityCommand(uint8_t motorID, float velocity);
 	void MotorStop(uint8_t motorID);
 
 /*Position control functions*/
-	void  PositionMode(uint8_t motorID);
-	static uint16_t AngleToValue(float angle_deg);
+	void PositionMode(uint8_t motorID);
 	void sendPositionCommand(uint8_t motorID, float angle_deg);
 
 
