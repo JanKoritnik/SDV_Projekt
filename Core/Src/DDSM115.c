@@ -199,21 +199,15 @@ void  PositionMode(uint8_t motorID)
 
 /******   Velocity functions *****************************************************************/
 
-	 static int16_t VelocityToValue(float velocity) {
-		// Clamp the angle between -300RPM and 300RPM
-		if(velocity < -300.0f) {
-			velocity = -300.0f;
-		}
-		if(velocity > 300.0f) {
-			velocity = 300.0f;
-		}
-		// Map [-300RPM <-> 300RPM]
-		return (int16_t)velocity ;
+	static int16_t VelocityToValue(float velocity) {
+		if(velocity < -300.0f) velocity = -300.0f;
+		if(velocity >  300.0f) velocity =  300.0f;
+		return (int16_t)((velocity / 300.0f) * 32767.0f);
 	}
 
 	void sendVelocityCommand(uint8_t motorID, float velocity) {
 		uint8_t command[10] = {0};
-		uint16_t target_value = VelocityToValue(velocity);
+		int16_t target_value = VelocityToValue(velocity);
 		LastCommand = target_value; //For real-time data acquisition
 
 		// Fill command packet according to documentation:
@@ -502,30 +496,27 @@ void  PositionMode(uint8_t motorID)
 	void ChangeMotorID(uint8_t NewMotorID)
 	{
 
-	        if(NewMotorID>255) NewMotorID=255;
-	        if(NewMotorID<0)   NewMotorID=0x02;
+		if(NewMotorID == 0) NewMotorID = 0x01;
 
-			command[0] = 0XAA;
-			command[1] = 0x55; // Status
-			command[2] = 0x53;
-			command[3] = NewMotorID;
-			command[4] = 0x00;
-			command[5] = 0x00;
-			command[6] = 0x00;
-			command[7] = 0x00;
-			command[8] = 0x00;
-			command[9] = 0x00;
+		uint8_t id_cmd[10] = {0};
+		id_cmd[0] = 0xAA;
+		id_cmd[1] = 0x55;
+		id_cmd[2] = 0x53;
+		id_cmd[3] = NewMotorID;
+		id_cmd[4] = 0x00;
+		id_cmd[5] = 0x00;
+		id_cmd[6] = 0x00;
+		id_cmd[7] = 0x00;
+		id_cmd[8] = 0x00;
+		id_cmd[9] = compute_crc8(id_cmd, 9);
 
-
-			for(int i=0;i<5;i++)
-			{
-				HAL_GPIO_WritePin(RS485_DIR_GPIO_Port, RS485_DIR_Pin, GPIO_PIN_SET);
-				// Transmit the command
-				HAL_UART_Transmit(&huart5, command, 10, HAL_MAX_DELAY);
-				// Return RS485 transceiver to receive mode
-				HAL_GPIO_WritePin(RS485_DIR_GPIO_Port, RS485_DIR_Pin, GPIO_PIN_RESET);
-				HAL_Delay(10);
-			}
+		for(int i = 0; i < 5; i++)
+		{
+			HAL_GPIO_WritePin(RS485_DIR_GPIO_Port, RS485_DIR_Pin, GPIO_PIN_SET);
+			HAL_UART_Transmit(&huart5, id_cmd, 10, HAL_MAX_DELAY);
+			HAL_GPIO_WritePin(RS485_DIR_GPIO_Port, RS485_DIR_Pin, GPIO_PIN_RESET);
+			HAL_Delay(100);
+		}
 
 
 	}

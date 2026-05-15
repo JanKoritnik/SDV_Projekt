@@ -190,44 +190,48 @@ int main(void)
     uint8_t motor_ID[] = {6, 5, 7, 8};
     CG_InitAllMotors(&hcan1, motor_ID);
 
-    // DDSM115 - inicializacija v velocity mode
-    VelocityMode(0x01);
-    HAL_Delay(4);
+    // ── Sprememba motor ID ──────────────────────────────────────
+    // Poveži SAMO EN motor, nastavi NEW_MOTOR_ID in flešaj.
+    // Ko je ID spremenjen, zakomentiraj to sekcijo in poveži oba motorja.
+#define CHANGE_MOTOR_ID  0        // 1 = aktiviraj spremembo, 0 = preskoči
+#define NEW_MOTOR_ID     0x10     // ← sem vpišeš nov ID (npr. 0x01 ali 0x30)
+
+#if CHANGE_MOTOR_ID
+    ChangeMotorID(NEW_MOTOR_ID);
+    char cmsg[50];
+    sprintf(cmsg, "Motor ID spremenjen na: 0x%02X\r\n", NEW_MOTOR_ID);
+    HAL_UART_Transmit(&huart2, (uint8_t*)cmsg, strlen(cmsg), 1000);
+    while(1);  // ustavi — odklopi motor in zakomentiraj sekcijo
+#endif
+
+    // DDSM115 - inicializacija v velocity mode, preberi in izpiši motor ID
+    VelocityMode(0x10);
+    HAL_Delay(100);
+    uint8_t dds_id01 = AllocBuffer[0];
+
     VelocityMode(0x30);
-    HAL_Delay(4);
-    sendVelocityCommand(0x01, 0.0f); // začetna hitrost 0
-    HAL_Delay(4);
-    sendVelocityCommand(0x30, 0.0f);
-    HAL_Delay(4);
+    HAL_Delay(100);
+    uint8_t dds_id30 = AllocBuffer[0];
+
+    char msg[50];
+    sprintf(msg, "DDS ID1: 0x%02X  ID2: 0x%02X\r\n", dds_id01, dds_id30);
+    HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 1000);
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-#define TARGET_ANGLE_RAD  0.5472f  // 60 stopinj v radianih
-
-    // Motor 1 (ID 6) in 4 (ID 8) → +60°
-    CG_SetPosition(&hcan1, motor_ID[0],  TARGET_ANGLE_RAD);
+    // DDSM115 - nastavi hitrost
+    sendVelocityCommand(0x10,  100.0f);
     HAL_Delay(4);
-    CG_SetPosition(&hcan1, motor_ID[3],  TARGET_ANGLE_RAD);
-    HAL_Delay(4);
+    sendVelocityCommand(0x30, -10.0f);
+    HAL_Delay(2000);
 
-    // Motor 2 (ID 5) in 3 (ID 7) → -60°
-    CG_SetPosition(&hcan1, motor_ID[1], -TARGET_ANGLE_RAD);
+    // Ustavi
+    sendVelocityCommand(0x10, 0.0f);
     HAL_Delay(4);
-    CG_SetPosition(&hcan1, motor_ID[2], -TARGET_ANGLE_RAD);
-    HAL_Delay(4);
-
-    HAL_Delay(10000);
-
-    // Vrni vse motorje na nulto pozicijo
-    for (int i = 0; i < 4; i++)
-    {
-        CG_SetPosition(&hcan1, motor_ID[i], 0.0f);
-        HAL_Delay(4);
-    }
-    HAL_Delay(3000);
+    sendVelocityCommand(0x30, 0.0f);
 
     /* USER CODE END WHILE */
 
