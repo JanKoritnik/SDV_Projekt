@@ -12,6 +12,7 @@ C_SRCS += \
 ../Core/Src/demo_app.c \
 ../Core/Src/euler.c \
 ../Core/Src/main.c \
+../Core/Src/regulator.c \
 ../Core/Src/sh2.c \
 ../Core/Src/sh2_SensorValue.c \
 ../Core/Src/sh2_util.c \
@@ -31,6 +32,7 @@ OBJS += \
 ./Core/Src/demo_app.o \
 ./Core/Src/euler.o \
 ./Core/Src/main.o \
+./Core/Src/regulator.o \
 ./Core/Src/sh2.o \
 ./Core/Src/sh2_SensorValue.o \
 ./Core/Src/sh2_util.o \
@@ -50,6 +52,7 @@ C_DEPS += \
 ./Core/Src/demo_app.d \
 ./Core/Src/euler.d \
 ./Core/Src/main.d \
+./Core/Src/regulator.d \
 ./Core/Src/sh2.d \
 ./Core/Src/sh2_SensorValue.d \
 ./Core/Src/sh2_util.d \
@@ -69,7 +72,7 @@ Core/Src/%.o Core/Src/%.su Core/Src/%.cyclo: ../Core/Src/%.c Core/Src/subdir.mk
 clean: clean-Core-2f-Src
 
 clean-Core-2f-Src:
-	-$(RM) ./Core/Src/DDSM115.cyclo ./Core/Src/DDSM115.d ./Core/Src/DDSM115.o ./Core/Src/DDSM115.su ./Core/Src/MRF24J40.cyclo ./Core/Src/MRF24J40.d ./Core/Src/MRF24J40.o ./Core/Src/MRF24J40.su ./Core/Src/control_loop.cyclo ./Core/Src/control_loop.d ./Core/Src/control_loop.o ./Core/Src/control_loop.su ./Core/Src/cybergear.cyclo ./Core/Src/cybergear.d ./Core/Src/cybergear.o ./Core/Src/cybergear.su ./Core/Src/demo_app.cyclo ./Core/Src/demo_app.d ./Core/Src/demo_app.o ./Core/Src/demo_app.su ./Core/Src/euler.cyclo ./Core/Src/euler.d ./Core/Src/euler.o ./Core/Src/euler.su ./Core/Src/main.cyclo ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/sh2.cyclo ./Core/Src/sh2.d ./Core/Src/sh2.o ./Core/Src/sh2.su ./Core/Src/sh2_SensorValue.cyclo ./Core/Src/sh2_SensorValue.d ./Core/Src/sh2_SensorValue.o ./Core/Src/sh2_SensorValue.su ./Core/Src/sh2_util.cyclo ./Core/Src/sh2_util.d ./Core/Src/sh2_util.o ./Core/Src/sh2_util.su ./Core/Src/shtp.cyclo ./Core/Src/shtp.d ./Core/Src/shtp.o ./Core/Src/shtp.su ./Core/Src/stm32f4xx_hal_msp.cyclo ./Core/Src/stm32f4xx_hal_msp.d ./Core/Src/stm32f4xx_hal_msp.o ./Core/Src/stm32f4xx_hal_msp.su ./Core/Src/stm32f4xx_it.cyclo ./Core/Src/stm32f4xx_it.d ./Core/Src/stm32f4xx_it.o ./Core/Src/stm32f4xx_it.su ./Core/Src/syscalls.cyclo ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/syscalls.su ./Core/Src/sysmem.cyclo ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32f4xx.cyclo ./Core/Src/system_stm32f4xx.d ./Core/Src/system_stm32f4xx.o ./Core/Src/system_stm32f4xx.su ./Core/Src/uart_app.cyclo ./Core/Src/uart_app.d ./Core/Src/uart_app.o ./Core/Src/uart_app.su
+	-$(RM) ./Core/Src/DDSM115.cyclo ./Core/Src/DDSM115.d ./Core/Src/DDSM115.o ./Core/Src/DDSM115.su ./Core/Src/MRF24J40.cyclo ./Core/Src/MRF24J40.d ./Core/Src/MRF24J40.o ./Core/Src/MRF24J40.su ./Core/Src/control_loop.cyclo ./Core/Src/control_loop.d ./Core/Src/control_loop.o ./Core/Src/control_loop.su ./Core/Src/cybergear.cyclo ./Core/Src/cybergear.d ./Core/Src/cybergear.o ./Core/Src/cybergear.su ./Core/Src/demo_app.cyclo ./Core/Src/demo_app.d ./Core/Src/demo_app.o ./Core/Src/demo_app.su ./Core/Src/euler.cyclo ./Core/Src/euler.d ./Core/Src/euler.o ./Core/Src/euler.su ./Core/Src/main.cyclo ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/regulator.cyclo ./Core/Src/regulator.d ./Core/Src/regulator.o ./Core/Src/regulator.su ./Core/Src/sh2.cyclo ./Core/Src/sh2.d ./Core/Src/sh2.o ./Core/Src/sh2.su ./Core/Src/sh2_SensorValue.cyclo ./Core/Src/sh2_SensorValue.d ./Core/Src/sh2_SensorValue.o ./Core/Src/sh2_SensorValue.su ./Core/Src/sh2_util.cyclo ./Core/Src/sh2_util.d ./Core/Src/sh2_util.o ./Core/Src/sh2_util.su ./Core/Src/shtp.cyclo ./Core/Src/shtp.d ./Core/Src/shtp.o ./Core/Src/shtp.su ./Core/Src/stm32f4xx_hal_msp.cyclo ./Core/Src/stm32f4xx_hal_msp.d ./Core/Src/stm32f4xx_hal_msp.o ./Core/Src/stm32f4xx_hal_msp.su ./Core/Src/stm32f4xx_it.cyclo ./Core/Src/stm32f4xx_it.d ./Core/Src/stm32f4xx_it.o ./Core/Src/stm32f4xx_it.su ./Core/Src/syscalls.cyclo ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/syscalls.su ./Core/Src/sysmem.cyclo ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32f4xx.cyclo ./Core/Src/system_stm32f4xx.d ./Core/Src/system_stm32f4xx.o ./Core/Src/system_stm32f4xx.su ./Core/Src/uart_app.cyclo ./Core/Src/uart_app.d ./Core/Src/uart_app.o ./Core/Src/uart_app.su
 
 .PHONY: clean-Core-2f-Src
 

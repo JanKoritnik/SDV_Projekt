@@ -9,6 +9,8 @@
 #ifndef INC_DDSM115_H_
 #define INC_DDSM115_H_
 
+#include <stdint.h>
+
 #define MOTOR_NUMBER 1   //Motors number in the network
 #define RS485_BUFFER_SIZE 10
 #define PACKET_SIZE 10

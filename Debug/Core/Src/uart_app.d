@@ -29,7 +29,7 @@ Core/Src/uart_app.o: ../Core/Src/uart_app.c ../Core/Inc/uart_app.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
- ../Core/Inc/DDSM115.h
+ ../Core/Inc/DDSM115.h ../Core/Inc/regulator.h
 ../Core/Inc/uart_app.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
@@ -63,3 +63,4 @@ Core/Src/uart_app.o: ../Core/Src/uart_app.c ../Core/Inc/uart_app.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
 ../Core/Inc/DDSM115.h:
+../Core/Inc/regulator.h:

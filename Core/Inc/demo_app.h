@@ -22,6 +22,10 @@ void BNO_App(void);
 void     DWT_Init(void);
 uint32_t DWT_GetMicros(void);
 
+/* Busy-wait delay using DWT — interrupt-independent, safe in ISR */
+#define DWT_DELAY_US(us) do { uint32_t _t = DWT_GetMicros(); \
+    while ((DWT_GetMicros() - _t) < (uint32_t)(us)); } while(0)
+
 // Rotation results (written by sensor callback, read by application)
 extern volatile float bno_roll, bno_pitch, bno_yaw;   // degrees, from quaternion
 extern volatile float bno_qw, bno_qx, bno_qy, bno_qz; // raw quaternion

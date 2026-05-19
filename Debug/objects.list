@@ -5,6 +5,7 @@
 "./Core/Src/demo_app.o"
 "./Core/Src/euler.o"
 "./Core/Src/main.o"
+"./Core/Src/regulator.o"
 "./Core/Src/sh2.o"
 "./Core/Src/sh2_SensorValue.o"
 "./Core/Src/sh2_util.o"

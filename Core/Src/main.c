@@ -27,6 +27,7 @@
 #include "demo_app.h"
 #include "uart_app.h"
 #include "control_loop.h"
+#include "regulator.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -135,9 +136,17 @@ int main(void)
   uint8_t motor_ID[] = {6, 5, 7, 8};
   CG_InitAllMotors(&hcan1, motor_ID);
 
-  // DDSM115
-  VelocityMode(0x10); HAL_Delay(100);
-  VelocityMode(0x30); HAL_Delay(100);
+  // DDSM115 — tokovni način za LQR regulator
+  CurrentMode(0x10); HAL_Delay(100);
+  CurrentMode(0x30); HAL_Delay(100);
+  sendCurrentCommand(0x10, 0.0f); HAL_Delay(10);
+  sendCurrentCommand(0x30, 0.0f); HAL_Delay(10);
+
+  // LQR regulator init
+  controller_init();
+
+  // Počakaj 2s da se BNO086 stabilizira
+  HAL_Delay(2000);
 
   /* USER CODE END 2 */
 
@@ -151,17 +160,17 @@ int main(void)
   {
       if (stop_request)
       {
-    	  CG_SetPosition(&hcan1, motor_ID[0],  0.0);
-    	  HAL_Delay(10);
-    	  CG_SetPosition(&hcan1, motor_ID[1], 0.0);
-    	  HAL_Delay(10);
-    	  CG_SetPosition(&hcan1, motor_ID[2], 0.0);
-    	  HAL_Delay(10);
-    	  CG_SetPosition(&hcan1, motor_ID[3],  0.0);
-    	  HAL_Delay(1000);
+          /* DDSM tok = 0 (ISR je že poslal, to je varnostni ponovni ukaz) */
+          sendCurrentCommand(0x10, 0.0f); HAL_Delay(10);
+          sendCurrentCommand(0x30, 0.0f); HAL_Delay(10);
 
-
+          /* CG noge nazaj na 0° in ustavi */
+          CG_SetPosition(&hcan1, cg_ids[0],  0.0f); HAL_Delay(10);
+          CG_SetPosition(&hcan1, cg_ids[1],  0.0f); HAL_Delay(10);
+          CG_SetPosition(&hcan1, cg_ids[2],  0.0f); HAL_Delay(10);
+          CG_SetPosition(&hcan1, cg_ids[3],  0.0f); HAL_Delay(1000);
           CG_StopAll(&hcan1, cg_ids);
+
           stop_request = 0;
       }
       __WFI();

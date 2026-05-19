@@ -1,5 +1,6 @@
 #include "uart_app.h"
 #include "string.h"
+#include "regulator.h"
 
 extern CAN_HandleTypeDef  hcan1;
 extern UART_HandleTypeDef huart2;
@@ -72,4 +73,12 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
     HAL_UART_Receive_DMA(&huart5, RS485_RxBuffer, 10);
     memcpy(AllocBuffer, RS485_RxBuffer, RS485_BUFFER_SIZE);
+
+    /* Posodobi RPM iz RS485 odgovora — bajt 0 = ID motorja, bajti 4-5 = hitrost */
+    {
+        uint8_t  id  = AllocBuffer[0];
+        float    rpm = (float)((int16_t)((AllocBuffer[4] << 8) | AllocBuffer[5]));
+        if      (id == 0x10) g_rpm_left  = rpm;
+        else if (id == 0x30) g_rpm_right = rpm;
+    }
 }

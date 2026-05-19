@@ -15,6 +15,7 @@
 #include "demo_app.h"
 #include "cybergear.h"
 #include "DDSM115.h"
+#include "regulator.h"
 
 #define TARGET_ANGLE_RAD   1.0472f   /* 60° in radians */
 #define LOOP_DURATION_MS   5000      /* čas delovanja motorjev v ms */
@@ -66,8 +67,9 @@ static void Control_Loop_Run(void)
     {
         if (!stop_request)
         {
-            sendVelocityCommand(0x10, 0.0f);
-            sendVelocityCommand(0x30, 0.0f);
+            sendCurrentCommand(0x10, 0.0f);
+            DWT_DELAY_US(300);
+            sendCurrentCommand(0x30, 0.0f);
             stop_request = 1;   /* main() bo ustavil CG motorje */
         }
         BNO_App();
@@ -83,11 +85,7 @@ static void Control_Loop_Run(void)
     dt_bno = t1 - t0;
 
     /* --- CyberGear position commands --- */
-    /* 300 µs DWT busy-wait between commands: enough for one CAN frame (~130 µs
-       at 1 Mbps) to leave the TX mailbox. DWT is interrupt-independent — safe in ISR. */
-    #define DWT_DELAY_US(us) do { uint32_t _t = DWT_GetMicros(); \
-        while ((DWT_GetMicros() - _t) < (us)); } while(0)
-
+    /* DWT_DELAY_US defined in demo_app.h — safe in ISR, no SysTick dependency */
     CG_SetPosition(&hcan1, motor_ID[0],  TARGET_ANGLE_RAD); DWT_DELAY_US(300);
     CG_SetPosition(&hcan1, motor_ID[1], -TARGET_ANGLE_RAD); DWT_DELAY_US(300);
     CG_SetPosition(&hcan1, motor_ID[2], -TARGET_ANGLE_RAD); DWT_DELAY_US(300);
@@ -95,9 +93,8 @@ static void Control_Loop_Run(void)
     t2 = DWT_GetMicros();
     dt_cg = t2 - t1;
 
-    /* --- DDSM115 velocity commands --- */
-    sendVelocityCommand(0x10,  0.0f);
-    sendVelocityCommand(0x30, -0.0f);
+    /* --- LQR balance regulator (DDSM115 current control) --- */
+    controller_step();
     t3 = DWT_GetMicros();
     dt_ddsm = t3 - t2;
 
