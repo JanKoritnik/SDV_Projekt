@@ -1,5 +1,6 @@
 "./Core/Src/DDSM115.o"
 "./Core/Src/MRF24J40.o"
+"./Core/Src/control_loop.o"
 "./Core/Src/cybergear.o"
 "./Core/Src/demo_app.o"
 "./Core/Src/euler.o"

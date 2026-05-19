@@ -19,6 +19,9 @@
 void BNO_Init(I2C_HandleTypeDef *hi2c, UART_HandleTypeDef *huart, uint16_t intPin);
 void BNO_App(void);
 
+void     DWT_Init(void);
+uint32_t DWT_GetMicros(void);
+
 // Rotation results (written by sensor callback, read by application)
 extern volatile float bno_roll, bno_pitch, bno_yaw;   // degrees, from quaternion
 extern volatile float bno_qw, bno_qx, bno_qy, bno_qz; // raw quaternion

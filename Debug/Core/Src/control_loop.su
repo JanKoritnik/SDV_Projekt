@@ -1,0 +1,4 @@
+../Core/Src/control_loop.c:36:13:TIM2_Init	4	static
+../Core/Src/control_loop.c:51:6:Control_Loop_Init	8	static
+../Core/Src/control_loop.c:62:13:Control_Loop_Run	40	static
+../Core/Src/control_loop.c:109:6:TIM2_IRQHandler	8	static

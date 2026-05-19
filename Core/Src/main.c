@@ -26,6 +26,7 @@
 #include "cybergear.h"
 #include "demo_app.h"
 #include "uart_app.h"
+#include "control_loop.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -35,7 +36,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TARGET_ANGLE_RAD  1.0472f   // 60 stopinj
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -144,35 +144,27 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  // CG motorji na pozicijo: ID6 in ID8 -> +60°, ID5 in ID7 -> -60°
-  CG_SetPosition(&hcan1, motor_ID[0],  TARGET_ANGLE_RAD); HAL_Delay(4);
-  CG_SetPosition(&hcan1, motor_ID[1], -TARGET_ANGLE_RAD); HAL_Delay(4);
-  CG_SetPosition(&hcan1, motor_ID[2], -TARGET_ANGLE_RAD); HAL_Delay(4);
-  CG_SetPosition(&hcan1, motor_ID[3],  TARGET_ANGLE_RAD); HAL_Delay(4);
-
-  // 3s pavza
-  { uint32_t t = HAL_GetTick(); while (HAL_GetTick() - t < 3000) BNO_App(); }
-
-  // DDSM motorji 5s
-  sendVelocityCommand(0x10,  50.0f); HAL_Delay(4);
-  sendVelocityCommand(0x30, -50.0f);
-  { uint32_t t = HAL_GetTick(); while (HAL_GetTick() - t < 5000) BNO_App(); }
-
-  // Ustavi vse
-  sendVelocityCommand(0x10, 0.0f); HAL_Delay(4);
-  sendVelocityCommand(0x30, 0.0f);
-  HAL_Delay(1000);
-  CG_SetPosition(&hcan1, motor_ID[0],  0.0); HAL_Delay(4);
-  CG_SetPosition(&hcan1, motor_ID[1], 0.0); HAL_Delay(4);
-  CG_SetPosition(&hcan1, motor_ID[2], 0.0); HAL_Delay(4);
-  CG_SetPosition(&hcan1, motor_ID[3],  0.0); HAL_Delay(4);
-
-  HAL_Delay(1000);
-  CG_StopAll(&hcan1, motor_ID);
+  uint8_t cg_ids[] = {6, 5, 7, 8};
+  Control_Loop_Init();
 
   while (1)
   {
-      BNO_App();
+      if (stop_request)
+      {
+    	  CG_SetPosition(&hcan1, motor_ID[0],  0.0);
+    	  HAL_Delay(10);
+    	  CG_SetPosition(&hcan1, motor_ID[1], 0.0);
+    	  HAL_Delay(10);
+    	  CG_SetPosition(&hcan1, motor_ID[2], 0.0);
+    	  HAL_Delay(10);
+    	  CG_SetPosition(&hcan1, motor_ID[3],  0.0);
+    	  HAL_Delay(1000);
+
+
+          CG_StopAll(&hcan1, cg_ids);
+          stop_request = 0;
+      }
+      __WFI();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
