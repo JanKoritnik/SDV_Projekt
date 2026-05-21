@@ -2,4 +2,4 @@
 ../Core/Src/uart_app.c:30:6:serialWrite	1
 ../Core/Src/uart_app.c:36:13:serialProcessRxData	5
 ../Core/Src/uart_app.c:57:6:HAL_CAN_RxFifo0MsgPendingCallback	1
-../Core/Src/uart_app.c:62:6:HAL_UART_RxCpltCallback	5
+../Core/Src/uart_app.c:62:6:HAL_UART_RxCpltCallback	6

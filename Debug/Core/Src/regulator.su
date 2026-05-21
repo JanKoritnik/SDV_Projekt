@@ -1,2 +1,2 @@
-../Core/Src/regulator.c:36:6:controller_init	8	static
-../Core/Src/regulator.c:45:6:controller_step	64	static
+../Core/Src/regulator.c:43:6:controller_init	8	static
+../Core/Src/regulator.c:55:6:controller_step	56	static

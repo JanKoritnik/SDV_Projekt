@@ -17,8 +17,8 @@
 #include "DDSM115.h"
 #include "regulator.h"
 
-#define TARGET_ANGLE_RAD   1.0472f   /* 60° in radians */
-#define LOOP_DURATION_MS   5000      /* čas delovanja motorjev v ms */
+#define TARGET_ANGLE_RAD   0.5236f   /* 30° in radians */
+#define LOOP_DURATION_MS   10000      /* čas delovanja motorjev v ms */
 
 extern CAN_HandleTypeDef hcan1;
 
@@ -31,6 +31,7 @@ volatile uint32_t dt_bno   = 0;
 volatile uint32_t dt_cg    = 0;
 volatile uint32_t dt_ddsm  = 0;
 volatile uint32_t dt_total = 0;
+volatile uint32_t dt_int   = 0;
 
 /* ------------------------------------------------------------------ */
 
@@ -76,10 +77,13 @@ static void Control_Loop_Run(void)
         return;
     }
 
+    static uint32_t t0_prev = 0;
     uint32_t t0, t1, t2, t3;
 
     /* --- BNO086 read --- */
     t0 = DWT_GetMicros();
+    dt_int = t0 - t0_prev;
+    t0_prev = t0;
     BNO_App();
     t1 = DWT_GetMicros();
     dt_bno = t1 - t0;
