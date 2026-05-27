@@ -216,10 +216,10 @@ void BNO_App(void)
     bnoIntFlag = false;
 
 
-    printf("dt:%5d | R:%6.1f P:%6.1f Y:%6.1f | Gx:%6.3f Gy:%6.3f Gz:%6.3f\r\n",
-        (int)dt,
-        bno_roll, bno_pitch, bno_yaw,
-        bno_gx, bno_gy, bno_gz);
+    //printf("dt:%5d | R:%6.1f P:%6.1f Y:%6.1f | Gx:%6.3f Gy:%6.3f Gz:%6.3f\r\n",
+    //    (int)dt,
+    //    bno_roll, bno_pitch, bno_yaw,
+    //    bno_gx, bno_gy, bno_gz);
 
     HAL_NVIC_ClearPendingIRQ(EXTI1_IRQn);
     HAL_NVIC_EnableIRQ(EXTI1_IRQn);

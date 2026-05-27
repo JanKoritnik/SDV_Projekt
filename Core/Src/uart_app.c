@@ -63,10 +63,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     if (huart->Instance == USART2)
     {
-        if (RxSingleByte == '\n')
+        RxUARTBuffer[RxUARTLength++] = RxSingleByte;
+
+        if (RxUARTLength >= 10)
+        {
             serialProcessRxData();
-        else
-            RxUARTBuffer[RxUARTLength++] = RxSingleByte;
+            RxUARTLength = 0;
+        }
 
         HAL_UART_Receive_IT(&huart2, &RxSingleByte, 1);
     }
@@ -74,15 +77,20 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     if (huart->Instance == UART5)
     {
         memcpy(AllocBuffer, RS485_RxBuffer, RS485_BUFFER_SIZE);
+        HAL_UART_Receive_DMA(&huart5, RS485_RxBuffer, 10);  /* restart takoj — DMA pripravljen za naslednji odgovor */
 
-        uint8_t  id  = AllocBuffer[0];
-        //uint16_t  rpm_r = ((uint16_t)AllocBuffer[4] << 8) | ((uint16_t)AllocBuffer[5]);
-        //int16_t rpm = (int16_t)rpm_r;
-        int16_t rpm = (int16_t)(((uint16_t)AllocBuffer[5]&255 << 8) | ((uint16_t)AllocBuffer[4]&255));
+        uint8_t id  = AllocBuffer[0];
+        uint16_t rpm_raw = (uint16_t)(((uint16_t)(AllocBuffer[4]) << 8) | ((uint16_t)(AllocBuffer[5])));
+        int16_t rpm = (int16_t)rpm_raw;
+
+       /* printf("RAW[10]: ");
+                for (int i = 0; i < 10; i++)
+                {
+                    printf("%02X ", AllocBuffer[i]);
+                }
+                printf("\r\n");*/
 
         if      (id == 0x10) g_rpm_left  = rpm;
         else if (id == 0x30) g_rpm_right = rpm;
-
-        HAL_UART_Receive_DMA(&huart5, RS485_RxBuffer, 10);
     }
 }

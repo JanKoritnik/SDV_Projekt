@@ -2,16 +2,17 @@
 #define REGULATOR_H
 
 #include <math.h>
+#include <stdint.h>
 
 // ═══════════════════════════════════════════════
 // LQR OJAČITVE
 // Izračunano iz: Q=diag([100,30,200,10]), R=0.01
 // Model: HIGH lega robota, Ts=20ms
 // ═══════════════════════════════════════════════
-#define K_WHEEL_POS    5.0f
-#define K_WHEEL_VEL    0.10f
-#define K_THETA        150.0f
-#define K_THETA_DOT    20.0f
+#define K_WHEEL_POS    90.0f
+#define K_WHEEL_VEL    99.00f
+#define K_THETA        260.0f
+#define K_THETA_DOT    48.0f
 
 // ═══════════════════════════════════════════════
 // NASTAVITVE — TUKAJ NASTAVIŠ
@@ -31,8 +32,8 @@
 #define THETA_MAX_DEG   30.0f
 
 // RPM iz DDSM115 odgovorov (posodablja uart_app.c ob vsakem RS485 prejemu)
-extern volatile float g_rpm_left;
-extern volatile float g_rpm_right;
+extern volatile int16_t g_rpm_left;
+extern volatile int16_t g_rpm_right;
 extern volatile float g_iq;
 
 void controller_init(void);

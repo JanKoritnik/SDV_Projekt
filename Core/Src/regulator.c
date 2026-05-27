@@ -32,8 +32,8 @@ static uint32_t calib_count    = 0;
 static float    reg_active     = 1.0f;   /* 1=regulator deluje, 0=ustavljen */
 
 /* RPM — polni ju uart_app.c ob vsakem RS485 odgovoru */
-volatile float g_rpm_left  = 0.0f;
-volatile float g_rpm_right = 0.0f;
+volatile int16_t g_rpm_left  = 0;
+volatile int16_t g_rpm_right = 0;
 
 /* Izhod regulatorja — za Live Expression / debugger */
 volatile float g_iq = 0.0f;
@@ -59,8 +59,9 @@ void controller_step(void)
     if (HAL_GetTick() - start_tick < STARTUP_DELAY_MS)
     {
         sendCurrentCommand(MOTOR_LEFT,  0.0f);
-        DWT_DELAY_US(300);
+        DWT_DELAY_US(3000);
         sendCurrentCommand(MOTOR_RIGHT, 0.0f);
+        //DWT_DELAY_US(3000);
         /* Naberi vzorce za kalibracijo ravnovesnega kota */
         calib_sum   += bno_roll;
         calib_count += 1;
@@ -85,8 +86,8 @@ void controller_step(void)
     float theta_dot = (theta - theta_prev) / TS;
     theta_prev = theta;
 
-    float vel_l = g_rpm_left  * (2.0f * 3.14159f / 60.0f) * WHEEL_RADIUS;
-    float vel_r = g_rpm_right * (2.0f * 3.14159f / 60.0f) * WHEEL_RADIUS;
+    float vel_l = (float)g_rpm_left  * (2.0f * 3.14159f / 60.0f) * WHEEL_RADIUS;
+    float vel_r = (float)g_rpm_right * (2.0f * 3.14159f / 60.0f) * WHEEL_RADIUS;
     float wheel_vel =  0.5f * (vel_l - vel_r);
 
     wheel_pos += wheel_vel * TS;
@@ -120,12 +121,15 @@ void controller_step(void)
      *  POZOR: če se robot destabilizira namesto stabilizira,
      *  obrni predznak:  iq = +(...) ali sendCurrentCommand(x, -iq)
      */
-    float iq = -(  K_WHEEL_POS * e_pos
-                 + K_WHEEL_VEL * e_vel
+    float iq = -(  -K_WHEEL_POS * e_pos
+                 - K_WHEEL_VEL * e_vel
                  + K_THETA     * e_theta
-                 + K_THETA_DOT * e_tdot ) * 0.02f * reg_active;
+                 + K_THETA_DOT * e_tdot ) * 0.017f * reg_active;
 
     	g_iq = iq;
+
+    	printf("%.2f ", iq);
+    	printf("\r\n");
     /* ── 5. OMEJI TOK ────────────────────────────────────────── */
 
     if (iq >  IQ_MAX) iq =  IQ_MAX;
@@ -136,6 +140,9 @@ void controller_step(void)
     /* ── 6. POŠLJI NA MOTORJE ────────────────────────────────── */
 
     sendCurrentCommand(MOTOR_LEFT,  MOTOR_LEFT_SIGN  * iq);
-    DWT_DELAY_US(100);
+    DWT_DELAY_US(3500);
     sendCurrentCommand(MOTOR_RIGHT, MOTOR_RIGHT_SIGN * iq);
+    //DWT_DELAY_US(3000);
+
+
 }

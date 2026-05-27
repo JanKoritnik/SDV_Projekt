@@ -103,6 +103,10 @@ static void Control_Loop_Run(void)
     dt_ddsm = t3 - t2;
 
     dt_total = t3 - t0;
+
+    /* --- RPM izpis na terminal vsako iteracijo --- */
+    //printf("RPM_L:%6d  RPM_R:%6d\r\n",
+       //   (int)g_rpm_left, (int)g_rpm_right);
 }
 
 /* ------------------------------------------------------------------ */
