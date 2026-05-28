@@ -50,7 +50,7 @@
 #define CG_NUM_MOTORS                 4
 #define CG_DEFAULT_LIMIT_CURRENT      3.0f   // A
 #define CG_DEFAULT_LIMIT_SPEED        2.0f  // rad/s za position following
-#define CG_INIT_DELAY_MS              100     // delay med ukazi pri init
+#define CG_INIT_DELAY_MS              10     // delay med ukazi pri init
 
 /* ── Return kode ─────────────────────────────────────────── */
 #define CG_OK                         0x00

@@ -146,7 +146,7 @@ int main(void)
   controller_init();
 
   // Počakaj 2s da se BNO086 stabilizira
-  HAL_Delay(2000);
+  HAL_Delay(500);
 
   /* USER CODE END 2 */
 
@@ -161,14 +161,11 @@ int main(void)
       if (stop_request)
       {
           /* DDSM tok = 0 (ISR je že poslal, to je varnostni ponovni ukaz) */
-          sendCurrentCommand(0x10, 0.0f); HAL_Delay(10);
-          sendCurrentCommand(0x30, 0.0f); HAL_Delay(10);
+         // sendCurrentCommand(0x10, 0.0f); HAL_Delay(10);
+          //sendCurrentCommand(0x30, 0.0f); HAL_Delay(10);
 
           /* CG noge nazaj na 0° in ustavi */
-          CG_SetPosition(&hcan1, cg_ids[0],  0.0f); HAL_Delay(10);
-          CG_SetPosition(&hcan1, cg_ids[1],  0.0f); HAL_Delay(10);
-          CG_SetPosition(&hcan1, cg_ids[2],  0.0f); HAL_Delay(10);
-          CG_SetPosition(&hcan1, cg_ids[3],  0.0f); HAL_Delay(1000);
+         HAL_Delay(1000);
           CG_StopAll(&hcan1, cg_ids);
 
           stop_request = 0;

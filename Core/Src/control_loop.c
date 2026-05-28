@@ -68,13 +68,16 @@ static void Control_Loop_Run(void)
     {
         if (!stop_request)
         {
-            sendCurrentCommand(0x10, 0.0f);
-            DWT_DELAY_US(300);
-            sendCurrentCommand(0x30, 0.0f);
+
             stop_request = 1;   /* main() bo ustavil CG motorje */
         }
-        BNO_App();
+        //BNO_App();
+        if (HAL_GetTick() - loop_start_ms >= LOOP_DURATION_MS+3000)
+            {sendCurrentCommand(0x10, 0.0f);
+            DWT_DELAY_US(300);
+            sendCurrentCommand(0x30, 0.0f);
         return;
+            }
     }
 
     static uint32_t t0_prev = 0;
@@ -94,6 +97,14 @@ static void Control_Loop_Run(void)
     CG_SetPosition(&hcan1, motor_ID[1], -TARGET_ANGLE_RAD); DWT_DELAY_US(300);
     CG_SetPosition(&hcan1, motor_ID[2], -TARGET_ANGLE_RAD); DWT_DELAY_US(300);
     CG_SetPosition(&hcan1, motor_ID[3],  TARGET_ANGLE_RAD);
+    if (stop_request)
+          {
+    /* CG noge nazaj na 0° in ustavi */
+              CG_SetPosition(&hcan1, motor_ID[0],  0.0f); DWT_DELAY_US(500);
+              CG_SetPosition(&hcan1, motor_ID[1],  0.0f); DWT_DELAY_US(500);
+              CG_SetPosition(&hcan1, motor_ID[2],  0.0f); DWT_DELAY_US(500);
+              CG_SetPosition(&hcan1, motor_ID[3],  0.0f); DWT_DELAY_US(500);
+          }
     t2 = DWT_GetMicros();
     dt_cg = t2 - t1;
 

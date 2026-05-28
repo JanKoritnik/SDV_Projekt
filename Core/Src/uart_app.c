@@ -83,6 +83,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         uint16_t rpm_raw = (uint16_t)(((uint16_t)(AllocBuffer[4]) << 8) | ((uint16_t)(AllocBuffer[5])));
         int16_t rpm = (int16_t)rpm_raw;
 
+        uint16_t pos = (uint16_t)(((uint16_t)(AllocBuffer[6]) << 8) | ((uint16_t)(AllocBuffer[7])));
+
+
        /* printf("RAW[10]: ");
                 for (int i = 0; i < 10; i++)
                 {
@@ -90,7 +93,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
                 }
                 printf("\r\n");*/
 
-        if      (id == 0x10) g_rpm_left  = rpm;
-        else if (id == 0x30) g_rpm_right = rpm;
+        if(id == 0x10) {
+        	g_rpm_left  = rpm;
+        	g_pos_left=pos;
+        }
+        else if(id == 0x30) {
+        	g_rpm_right = rpm;
+        	g_pos_right = pos;
+        }
     }
 }

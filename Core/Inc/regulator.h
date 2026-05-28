@@ -9,10 +9,10 @@
 // Izračunano iz: Q=diag([100,30,200,10]), R=0.01
 // Model: HIGH lega robota, Ts=20ms
 // ═══════════════════════════════════════════════
-#define K_WHEEL_POS    90.0f
-#define K_WHEEL_VEL    99.00f
-#define K_THETA        260.0f
-#define K_THETA_DOT    48.0f
+#define K_WHEEL_POS     4.080f
+#define K_WHEEL_VEL     4.488f
+#define K_THETA        11.787f
+#define K_THETA_DOT     2.176f
 
 // ═══════════════════════════════════════════════
 // NASTAVITVE — TUKAJ NASTAVIŠ
@@ -32,9 +32,11 @@
 #define THETA_MAX_DEG   30.0f
 
 // RPM iz DDSM115 odgovorov (posodablja uart_app.c ob vsakem RS485 prejemu)
-extern volatile int16_t g_rpm_left;
-extern volatile int16_t g_rpm_right;
-extern volatile float g_iq;
+extern volatile int16_t  g_rpm_left;
+extern volatile int16_t  g_rpm_right;
+extern volatile uint16_t g_pos_left;
+extern volatile uint16_t g_pos_right;
+extern volatile float    g_iq;
 
 void controller_init(void);
 void controller_step(void);
