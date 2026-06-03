@@ -274,4 +274,12 @@ void USART2_IRQHandler(void)
 
 /* USER CODE BEGIN 1 */
 
+/**
+  * @brief This function handles EXTI line[15:10] interrupts (B1 user button, PC13).
+  */
+void EXTI15_10_IRQHandler(void)
+{
+    HAL_GPIO_EXTI_IRQHandler(B1_Pin);
+}
+
 /* USER CODE END 1 */

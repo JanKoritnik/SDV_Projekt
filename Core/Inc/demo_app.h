@@ -31,4 +31,7 @@ extern volatile float bno_roll, bno_pitch, bno_yaw;   // degrees, from quaternio
 extern volatile float bno_qw, bno_qx, bno_qy, bno_qz; // raw quaternion
 extern volatile float bno_gx, bno_gy, bno_gz;
 
+/* User button (B1, PC13) — postavi na 1 ob pritisku, beri/pobriši kjerkoli */
+extern volatile uint8_t g_btn_flag;
+
 #endif /* INC_DEMO_APP_H_ */

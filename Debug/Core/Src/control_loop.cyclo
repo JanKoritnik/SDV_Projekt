@@ -1,4 +1,4 @@
 ../Core/Src/control_loop.c:38:13:TIM2_Init	1
 ../Core/Src/control_loop.c:53:6:Control_Loop_Init	1
 ../Core/Src/control_loop.c:64:13:Control_Loop_Run	13
-../Core/Src/control_loop.c:125:6:TIM2_IRQHandler	2
+../Core/Src/control_loop.c:134:6:TIM2_IRQHandler	2

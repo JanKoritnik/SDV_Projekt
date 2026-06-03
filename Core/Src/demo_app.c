@@ -25,7 +25,8 @@ volatile float bno_roll, bno_pitch, bno_yaw;
 // Angular velocity (rad/s)
 volatile float bno_gx, bno_gy, bno_gz;
 
-volatile bool bnoIntFlag = false;
+volatile bool    bnoIntFlag = false;
+volatile uint8_t g_btn_flag = 0;
 
 // Timing
 volatile uint32_t t_old = 0;
@@ -241,4 +242,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         HAL_NVIC_DisableIRQ(EXTI1_IRQn);
     }
 
+    if (GPIO_Pin == B1_Pin)
+    {
+        g_btn_flag = 1;
+    }
 }

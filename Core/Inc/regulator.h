@@ -9,10 +9,10 @@
 // Izračunano iz: Q=diag([100,30,200,10]), R=0.01
 // Model: HIGH lega robota, Ts=20ms
 // ═══════════════════════════════════════════════
-#define K_WHEEL_POS     4.080f
-#define K_WHEEL_VEL     4.488f
-#define K_THETA        11.787f
-#define K_THETA_DOT     2.176f
+#define K_WHEEL_POS     4.280f
+#define K_WHEEL_VEL     4.588f
+#define K_THETA        11.987f
+#define K_THETA_DOT     2.376f
 
 // ═══════════════════════════════════════════════
 // NASTAVITVE — TUKAJ NASTAVIŠ

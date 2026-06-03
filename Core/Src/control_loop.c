@@ -72,7 +72,7 @@ static void Control_Loop_Run(void)
             stop_request = 1;   /* main() bo ustavil CG motorje */
         }
         //BNO_App();
-        if (HAL_GetTick() - loop_start_ms >= LOOP_DURATION_MS+3000)
+        if (HAL_GetTick() - loop_start_ms >= LOOP_DURATION_MS+1500)
             {sendCurrentCommand(0x10, 0.0f);
             DWT_DELAY_US(300);
             sendCurrentCommand(0x30, 0.0f);
@@ -105,6 +105,15 @@ static void Control_Loop_Run(void)
               CG_SetPosition(&hcan1, motor_ID[2],  0.0f); DWT_DELAY_US(500);
               CG_SetPosition(&hcan1, motor_ID[3],  0.0f); DWT_DELAY_US(500);
           }
+    /*if (g_btn_flag)
+              {
+
+                  CG_SetPosition(&hcan1, motor_ID[0],  1.0f); DWT_DELAY_US(500);
+                  CG_SetPosition(&hcan1, motor_ID[1],  -1.0f); DWT_DELAY_US(500);
+                  CG_SetPosition(&hcan1, motor_ID[2],  -1.0f); DWT_DELAY_US(500);
+                  CG_SetPosition(&hcan1, motor_ID[3],  1.0f); DWT_DELAY_US(500);
+                  g_btn_flag = 0;
+              }*/
     t2 = DWT_GetMicros();
     dt_cg = t2 - t1;
 
